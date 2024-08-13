@@ -1,0 +1,171 @@
+TS 에서 Array와 Tuple과 Enum 데이터 타입
+ 
+
+TypeScript에서는 js에서 보다 타입을 확장하여 더 강력한 타입 검사를 제공한다.
+
+이번에는 TypeScript에서 Array와 Tuple 그리고 Enum 에 대해서 알아볼 예정이다.
+
+ 
+
+1. Array 타입
+ 
+
+TypeScript에서 배열 타입을 선언하는 방법은 두 가지가 있다.
+
+// 첫 번째 방법: 타입 + []
+let fruits: string[] = ["Apple", "Banana", "Cherry"];
+
+// 두 번째 방법: Array<타입>
+let colors: Array<string> = ["Red", "Green", "Blue"];
+배열 안에서 객체를 사용하는 경우 다음과 같이 지정한다.
+
+// 배열 안에 객체가 있는 경우
+let users: { name: string; age: number }[] = [
+  { name: "Alice", age: 25 },
+  { name: "Bob", age: 30 },
+];
+
+// 배열 안의 객체 타입 지정
+let products: Array<{ id: number; name: string; price: number }> = [
+  { id: 1, name: "Laptop", price: 1500 },
+  { id: 2, name: "Smartphone", price: 800 },
+];
+ 
+
+ 
+
+2. Tuple 타입
+Tuple은 고정된 길이와 타입의 배열이다. 각 요소의 타입과 순서가 정해져 있다. 이는 Ts에서만 제공되는 타입이다.
+
+// 문자열, 숫자, 불리언 순서로 이루어진 튜플
+let userInfo: [string, number, boolean] = ["Alice", 25, true];
+
+// 날짜와 이벤트 이름을 가진 튜플
+let event: [Date, string] = [new Date(), "Conference"];
+
+// 두 개의 값을 반환하는 함수
+function getUserInfo(): [string, number] {
+  return ["Alice", 25];
+}
+
+let user: [string, number] = getUserInfo();
+ 
+
+Array와 Tuple의 주요 차이점은 다음과 같다.
+
+Array는 길이가 가변적이며, 동일한 타입의 요소로 구성된다.
+Tuple은 길이가 고정되어 있으며, 각 요소의 타입이 정해져 있다. JavaScript에는 없는 데이터 타입이며, TypeScript에서만 사용할 수 있습니다.
+// Array 예제: 동일한 타입의 요소로 구성된 가변적 배열
+let numbers: number[] = [1, 2, 3, 4];
+numbers.push(5); // 가능
+
+// Tuple 예제: 고정된 길이와 타입을 가진 배열
+let tupleExample: [string, number] = ["Hello", 42];
+// tupleExample.push(true); // 오류 발생: 불리언 타입 추가 불가
+
+// 잘못된 순서의 요소를 할당하려고 할 때 발생하는 오류
+// let invalidTuple: [string, number] = [42, "Hello"]; // 오류: 순서가 잘못됨
+ 
+
+ 
+
+3. Enum 데이터 타입
+ 
+
+TypeScript에서 Enum은 기본적으로 두 가지 종류로 나눌 수 있다.
+
+숫자형 Enum(Numeric Enums)
+문자열형 Enum(String Enums)
+1. 숫자형 Enum (Numeric Enums)
+
+ 
+
+숫자형 Enum은 기본적으로 첫 번째 값이 0부터 시작하며, 이후 값들은 자동으로 1씩 증가한다. 물론, 초기 값을 설정하여 다른 값으로 시작하게 할 수도 있다.
+
+ 
+
+enum Direction {
+  Up,
+  Down,
+  Left,
+  Right
+}
+
+let dir: Direction = Direction.Up;
+console.log(dir); // 0
+위 예제에서 Direction.Up은 0으로, Direction.Down은 1로 자동 할당된다. 값을 지정하지 않으면 자동으로 증가한다.
+
+ 
+
+enum Direction {
+  Up = 1,
+  Down,
+  Left,
+  Right
+}
+
+console.log(Direction.Up); // 1
+console.log(Direction.Down); // 2
+console.log(Direction.Left); // 3
+console.log(Direction.Right); // 4
+Up에 1을 할당하면, 이후 값들은 2, 3, 4로 자동 증가한다.
+
+ 
+
+2. 문자열형 Enum (String Enums)
+
+ 
+
+문자열형 Enum은 각 멤버에 수동으로 문자열 값을 할당해야 한다. 자동 증가와 같은 기능은 없으며, 모든 값을 명시적으로 지정해야 한다.
+
+enum Direction {
+  Up = "UP",
+  Down = "DOWN",
+  Left = "LEFT",
+  Right = "RIGHT"
+}
+
+let dir: Direction = Direction.Left;
+console.log(dir); // "LEFT"
+위 예제에서 각 Direction 값들은 문자열로 할당되며, 숫자가 아닌 문자열이 필요한 경우 유용하다.
+
+ 
+
+3. Enum의 활용
+
+ 
+
+enum HttpStatus {
+  OK = 200,
+  BadRequest = 400,
+  Unauthorized = 401,
+  Forbidden = 403,
+  NotFound = 404
+}
+
+function handleResponse(status: HttpStatus): void {
+  switch (status) {
+    case HttpStatus.OK:
+      console.log("Request was successful!");
+      break;
+    case HttpStatus.BadRequest:
+      console.log("Bad request.");
+      break;
+    case HttpStatus.Unauthorized:
+      console.log("Unauthorized access.");
+      break;
+    case HttpStatus.Forbidden:
+      console.log("Access forbidden.");
+      break;
+    case HttpStatus.NotFound:
+      console.log("Resource not found.");
+      break;
+    default:
+      console.log("Unknown status code.");
+  }
+}
+
+handleResponse(HttpStatus.OK); // Request was successful!
+다음과 같이 Enum을 통해서 상태 코드를 관리함으로 코드의 가독성을 높일 수 있다.
+
+이처럼 'Enum' 타입은 관련된 상수들의 집합을 보다 명확하게 표현함으로써 코드의 가독성과 유지보수성을 높이는 역할을 할 수 있다.
